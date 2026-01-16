@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.11" />
+    <PackageReference Include="HotChocolate.Data" Version="15.1.11" />
+    <PackageReference Include="Metaphor.HotChocolate.AspNetCore" Version="0.0.3" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.56.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FoodHub.Menu\FoodHub.Menu.Application\FoodHub.Menu.Application.csproj" />
+    <ProjectReference Include="..\FoodHub.Menu\FoodHub.Menu.Infrastructure\FoodHub.Menu.Infrastructure.csproj" />
+    <ProjectReference Include="..\FoodHub.Restaurant\FoodHub.Restaurant.Application\FoodHub.Restaurant.Application.csproj" />
+    <ProjectReference Include="..\FoodHub.Restaurant\FoodHub.Restaurant.Infrastructure\FoodHub.Restaurant.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

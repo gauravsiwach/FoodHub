@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+  <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.56.0" />
+  <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.2" />
+  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
+  <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FoodHub.Menu.Application\FoodHub.Menu.Application.csproj" />
+    <ProjectReference Include="..\FoodHub.Menu.Domain\FoodHub.Menu.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
