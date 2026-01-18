@@ -5,6 +5,8 @@ using FoodHub.Menu.Application.Dtos;
 using FoodHub.Menu.Application.Interfaces;
 using FoodHub.Menu.Application.Queries;
 using FoodHub.Restaurant.Application.Queries.GetAllRestaurants;
+using HotChocolate;
+using HotChocolate.Types;
 using Serilog;
 using System;
 using System.Threading;
@@ -12,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace FoodHub.Api.GraphQL.Queries;
 
+[ExtendObjectType("Query")]
 public sealed class RestaurantQuery
 {
     public async Task<IReadOnlyList<RestaurantDto>> GetAllRestaurants(

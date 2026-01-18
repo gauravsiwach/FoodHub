@@ -5,6 +5,7 @@ using FoodHub.Restaurant.Infrastructure.Persistence.Cosmos;
 using FoodHub.Restaurant.Infrastructure.Persistence.Repositories;
 using FoodHub.Menu.Application.Interfaces;
 using FoodHub.Menu.Infrastructure.Persistence.Cosmos;
+using FoodHub.User.Infrastructure;
 using Microsoft.Azure.Cosmos;
 using FoodHub.Menu.Infrastructure;
 using Serilog;
@@ -36,10 +37,17 @@ builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 // Menu repository (implementation in Menu.Infrastructure)
 builder.Services.AddScoped<IMenuRepository, FoodHub.Menu.Infrastructure.Persistence.Repositories.MenuRepository>();
 
+// User module registration
+builder.Services.AddUserModule(builder.Configuration);
+
 builder.Services
     .AddGraphQLServer()
-    .AddQueryType<RestaurantQuery>()
-    .AddMutationType<RestaurantMutation>();
+    .AddQueryType()
+    .AddTypeExtension<RestaurantQuery>()
+    .AddTypeExtension<UserQuery>()
+    .AddMutationType()
+    .AddTypeExtension<RestaurantMutation>()
+    .AddTypeExtension<UserMutation>();
 
 // Serilog configuration
 Log.Logger = new LoggerConfiguration()
@@ -58,6 +66,13 @@ builder.Services.AddSingleton<Serilog.ILogger>(Log.Logger);
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+// Ensure User database is created
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<FoodHub.User.Infrastructure.Sql.UserDbContext>();
+    context.Database.EnsureCreated();
+}
 
 // Correlation ID Middleware
 app.Use(async (context, next) =>

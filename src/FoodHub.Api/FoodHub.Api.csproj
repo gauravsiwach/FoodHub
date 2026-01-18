@@ -23,6 +23,8 @@
     <ProjectReference Include="..\FoodHub.Menu\FoodHub.Menu.Infrastructure\FoodHub.Menu.Infrastructure.csproj" />
     <ProjectReference Include="..\FoodHub.Restaurant\FoodHub.Restaurant.Application\FoodHub.Restaurant.Application.csproj" />
     <ProjectReference Include="..\FoodHub.Restaurant\FoodHub.Restaurant.Infrastructure\FoodHub.Restaurant.Infrastructure.csproj" />
+    <ProjectReference Include="..\FoodHub.User\FoodHub.User.Application\FoodHub.User.Application.csproj" />
+    <ProjectReference Include="..\FoodHub.User\FoodHub.User.Infrastructure\FoodHub.User.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

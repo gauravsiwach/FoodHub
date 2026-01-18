@@ -4,6 +4,8 @@ using FoodHub.Restaurant.Application.Interfaces;
 using FoodHub.Menu.Application.Commands;
 using FoodHub.Menu.Application.Dtos;
 using FoodHub.Menu.Application.Interfaces;
+using HotChocolate;
+using HotChocolate.Types;
 using Serilog;
 using System;
 using System.Threading;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace FoodHub.Api.GraphQL.Mutations;
 
+[ExtendObjectType("Mutation")]
 public sealed class RestaurantMutation
 {
     public async Task<Guid> CreateRestaurant(
