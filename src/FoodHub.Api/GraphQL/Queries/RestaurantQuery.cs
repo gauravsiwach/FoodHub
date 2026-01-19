@@ -6,6 +6,7 @@ using FoodHub.Menu.Application.Interfaces;
 using FoodHub.Menu.Application.Queries;
 using FoodHub.Restaurant.Application.Queries.GetAllRestaurants;
 using HotChocolate;
+using HotChocolate.Authorization;
 using HotChocolate.Types;
 using Serilog;
 using System;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace FoodHub.Api.GraphQL.Queries;
 
+[Authorize]
 [ExtendObjectType("Query")]
 public sealed class RestaurantQuery
 {

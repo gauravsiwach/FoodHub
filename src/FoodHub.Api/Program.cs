@@ -9,6 +9,9 @@ using FoodHub.Menu.Infrastructure.Persistence.Cosmos;
 using FoodHub.User.Infrastructure;
 using Microsoft.Azure.Cosmos;
 using FoodHub.Menu.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Serilog;
 using Serilog.Events;
 using HotChocolate.AspNetCore;
@@ -44,12 +47,37 @@ builder.Services.AddUserModule(builder.Configuration);
 // Auth services
 builder.Services.Configure<GoogleAuthOptions>(builder.Configuration.GetSection("GoogleAuth"));
 builder.Services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
+builder.Services.AddScoped<FoodHub.Api.Auth.JWT.IJwtTokenGenerator, FoodHub.Api.Auth.JWT.JwtTokenGenerator>();
+
+// JWT Authentication
+var jwtSection = builder.Configuration.GetSection("Jwt");
+var secret = jwtSection.GetValue<string>("Secret") ?? throw new InvalidOperationException("JWT Secret is not configured");
+var issuer = jwtSection.GetValue<string>("Issuer") ?? "FoodHub";
+var audience = jwtSection.GetValue<string>("Audience") ?? "FoodHub";
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 // Add Controllers for auth endpoints
 builder.Services.AddControllers();
 
 builder.Services
     .AddGraphQLServer()
+    .AddAuthorization()
     .AddQueryType()
     .AddTypeExtension<RestaurantQuery>()
     .AddTypeExtension<UserQuery>()
@@ -93,6 +121,9 @@ app.Use(async (context, next) =>
         await next();
     }
 });
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Map Controllers for auth endpoints
 app.MapControllers();

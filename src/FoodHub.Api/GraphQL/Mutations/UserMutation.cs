@@ -4,6 +4,7 @@ using FoodHub.User.Application.Queries.GetUserById;
 using FoodHub.User.Application.Dtos;
 using FoodHub.User.Application.Interfaces;
 using HotChocolate;
+using HotChocolate.Authorization;
 using HotChocolate.Types;
 using Serilog;
 using System;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace FoodHub.Api.GraphQL.Mutations;
 
+[Authorize]
 [ExtendObjectType("Mutation")]
 public sealed class UserMutation
 {

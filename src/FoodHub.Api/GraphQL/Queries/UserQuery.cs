@@ -4,6 +4,7 @@ using FoodHub.User.Application.Queries.GetAllUser;
 using FoodHub.User.Application.Queries.GetUserById;
 using FoodHub.User.Application.Queries.GetUserByEmail;
 using HotChocolate;
+using HotChocolate.Authorization;
 using HotChocolate.Types;
 using Serilog;
 using System;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace FoodHub.Api.GraphQL.Queries;
 
+[Authorize]
 [ExtendObjectType("Query")]
 public sealed class UserQuery
 {

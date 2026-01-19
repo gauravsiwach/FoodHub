@@ -1,4 +1,5 @@
 using FoodHub.Api.Auth.Google;
+using FoodHub.Api.Auth.JWT;
 using FoodHub.User.Application.Commands.CreateUser;
 using FoodHub.User.Application.Dtos;
 using FoodHub.User.Application.Interfaces;
@@ -14,15 +15,18 @@ public sealed class GoogleAuthController : ControllerBase
 {
     private readonly IGoogleTokenValidator _googleTokenValidator;
     private readonly IUserRepository _userRepository;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly Serilog.ILogger _logger;
 
     public GoogleAuthController(
         IGoogleTokenValidator googleTokenValidator,
         IUserRepository userRepository,
+        IJwtTokenGenerator jwtTokenGenerator,
         Serilog.ILogger logger)
     {
         _googleTokenValidator = googleTokenValidator ?? throw new ArgumentNullException(nameof(googleTokenValidator));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _jwtTokenGenerator = jwtTokenGenerator ?? throw new ArgumentNullException(nameof(jwtTokenGenerator));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -64,12 +68,16 @@ public sealed class GoogleAuthController : ControllerBase
                 _logger.ForContext<GoogleAuthController>().Information("Created new user {UserId} for email {Email}", userId, googleTokenInfo.Email);
             }
 
-            // Return user information
+            // Generate FoodHub JWT
+            var jwtToken = _jwtTokenGenerator.GenerateToken(userId, googleTokenInfo.Email, googleTokenInfo.Name);
+
+            // Return user information with JWT
             var response = new
             {
                 userId = userId,
                 email = googleTokenInfo.Email,
                 name = googleTokenInfo.Name,
+                token = jwtToken,
                 message = "Authentication successful"
             };
 

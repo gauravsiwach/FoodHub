@@ -5,6 +5,7 @@ using FoodHub.Menu.Application.Commands;
 using FoodHub.Menu.Application.Dtos;
 using FoodHub.Menu.Application.Interfaces;
 using HotChocolate;
+using HotChocolate.Authorization;
 using HotChocolate.Types;
 using Serilog;
 using System;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace FoodHub.Api.GraphQL.Mutations;
 
+[Authorize]
 [ExtendObjectType("Mutation")]
 public sealed class RestaurantMutation
 {
