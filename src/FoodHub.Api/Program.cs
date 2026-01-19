@@ -1,5 +1,6 @@
 using FoodHub.Api.GraphQL.Mutations;
 using FoodHub.Api.GraphQL.Queries;
+using FoodHub.Api.Auth.Google;
 using FoodHub.Restaurant.Application.Interfaces;
 using FoodHub.Restaurant.Infrastructure.Persistence.Cosmos;
 using FoodHub.Restaurant.Infrastructure.Persistence.Repositories;
@@ -39,6 +40,13 @@ builder.Services.AddScoped<IMenuRepository, FoodHub.Menu.Infrastructure.Persiste
 
 // User module registration
 builder.Services.AddUserModule(builder.Configuration);
+
+// Auth services
+builder.Services.Configure<GoogleAuthOptions>(builder.Configuration.GetSection("GoogleAuth"));
+builder.Services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
+
+// Add Controllers for auth endpoints
+builder.Services.AddControllers();
 
 builder.Services
     .AddGraphQLServer()
@@ -85,6 +93,9 @@ app.Use(async (context, next) =>
         await next();
     }
 });
+
+// Map Controllers for auth endpoints
+app.MapControllers();
 
 app.MapGraphQL("/graphql");
 

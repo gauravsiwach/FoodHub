@@ -1,11 +1,13 @@
 using FoodHub.User.Application.Dtos;
 using FoodHub.User.Application.Interfaces;
+using FoodHub.User.Application.Queries.GetAllUser;
 using FoodHub.User.Application.Queries.GetUserById;
 using FoodHub.User.Application.Queries.GetUserByEmail;
 using HotChocolate;
 using HotChocolate.Types;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,6 +48,26 @@ public sealed class UserQuery
         }
     }
 
+    public async Task<List<UserDto>> GetAllUsers(
+        [Service] IUserRepository repository,
+        [Service] Serilog.ILogger logger,
+        [Service] Serilog.ILogger queryLogger,
+        CancellationToken cancellationToken)
+    {
+        logger.ForContext<UserQuery>().Information("Begin: GetAllUsers query");
+        try
+        {
+            var query = new GetAllUserQuery(repository, queryLogger.ForContext<GetAllUserQuery>());
+            var users = await query.ExecuteAsync(cancellationToken);
+            logger.ForContext<UserQuery>().Information("Success: Retrieved all users, count: {UserCount}", users.Count);
+            return users;
+        }
+        catch (Exception ex)
+        {
+            logger.ForContext<UserQuery>().Error(ex, "Error: Failed to get all users");
+            throw;
+        }
+    }
     public async Task<UserDto?> GetUserByEmail(
         string email,
         [Service] IUserRepository repository,
@@ -78,3 +100,4 @@ public sealed class UserQuery
         }
     }
 }
+

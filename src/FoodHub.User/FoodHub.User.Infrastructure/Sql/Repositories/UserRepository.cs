@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FoodHub.User.Application.Interfaces;
@@ -32,6 +34,15 @@ public sealed class UserRepository : IUserRepository
             .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
         return userEntity?.ToDomain();
+    }
+
+    public async Task<List<UserEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        var userEntities = await _context.Users
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        return userEntities.Select(u => u.ToDomain()).ToList();
     }
 
     public async Task<UserEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
