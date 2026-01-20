@@ -12,12 +12,25 @@ using FoodHub.Menu.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Azure.Identity;
 using Serilog;
 using Serilog.Events;
 using HotChocolate.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Azure Key Vault Configuration (Production only)
+if (builder.Environment.IsDevelopment())
+{
+    var keyVaultEndpoint = builder.Configuration["KeyVault:Endpoint"];
+    if (!string.IsNullOrEmpty(keyVaultEndpoint))
+    {
+        builder.Configuration.AddAzureKeyVault(
+            new Uri(keyVaultEndpoint),
+            new DefaultAzureCredential());
+    }
+}
 
 // Bind options for both modules from the single top-level "Cosmos" section
 var cosmosSection = builder.Configuration.GetSection("Cosmos");
