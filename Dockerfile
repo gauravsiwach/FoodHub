@@ -21,6 +21,10 @@ RUN dotnet restore
 # Copy source code
 COPY src/ src/
 
+# Build dependencies first
+RUN dotnet build src/FoodHub.User/FoodHub.User.Domain/FoodHub.User.Domain.csproj -c Release --no-restore
+RUN dotnet build src/FoodHub.User/FoodHub.User.Application/FoodHub.User.Application.csproj -c Release --no-restore
+
 # Build and publish
 WORKDIR /src/src/FoodHub.Api
 RUN dotnet publish -c Release -o /app/publish --no-restore
