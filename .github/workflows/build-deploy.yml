@@ -1,0 +1,70 @@
+name: Build and Deploy to AKS
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  ACR_NAME: ${{ vars.ACR_NAME }}
+  AKS_RESOURCE_GROUP: ${{ vars.AKS_RESOURCE_GROUP }}
+  AKS_CLUSTER_NAME: ${{ vars.AKS_CLUSTER_NAME }}
+  IMAGE_NAME: foodhub-api
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write   # Required for Azure OIDC
+      contents: read    # Required to checkout code
+    
+    steps:
+    # Checkout source code
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    # Azure login using OIDC (no secrets)
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+    
+    # Login to Azure Container Registry
+    - name: Login to ACR
+      run: |
+        az acr login --name ${{ env.ACR_NAME }}
+    
+    # Build Docker image with multiple tags
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+        docker tag ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+    
+    # Push image to ACR with both tags
+    - name: Push to ACR
+      run: |
+        docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+    
+    # # Get AKS credentials
+    # - name: Get AKS credentials
+    #   run: |
+    #     az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
+    
+    # # Deploy new image to AKS using kubectl set image
+    # - name: Deploy to AKS
+    #   run: |
+    #     kubectl set image deployment/foodhub-api foodhub-api=${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+    
+    # # Verify deployment rollout
+    # - name: Verify deployment
+    #   run: |
+    #     kubectl rollout status deployment/foodhub-api --timeout=300s
+    
+    # # Get deployment status
+    # - name: Get deployment status
+    #   run: |
+    #     kubectl get pods -l app=foodhub-api
+    #     kubectl get services

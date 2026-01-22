@@ -21,7 +21,7 @@ using HotChocolate.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Azure Key Vault Configuration (Production only)
-if (builder.Environment.IsDevelopment())
+// if (builder.Environment.IsDevelopment())
 {
     var keyVaultEndpoint = builder.Configuration["KeyVault:Endpoint"];
     if (!string.IsNullOrEmpty(keyVaultEndpoint))
