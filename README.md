@@ -1,4 +1,4 @@
-# FoodHub - Modular Monolith Architecture
+# FoodHub - Modular Monolith Architecture 
 
 A production-ready food delivery and restaurant management platform built on .NET 9 using **Modular Monolith** and **Clean Architecture** principles. Designed for enterprise-scale operations with strategic microservice decomposition capabilities.
 
