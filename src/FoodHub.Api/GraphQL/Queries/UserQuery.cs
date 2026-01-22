@@ -3,7 +3,6 @@ using FoodHub.User.Application.Interfaces;
 using FoodHub.User.Application.Queries.GetAllUser;
 using FoodHub.User.Application.Queries.GetUserById;
 using FoodHub.User.Application.Queries.GetUserByEmail;
-using GetAllUserQuery = FoodHub.User.Application.Queries.GetAllUser.GetAllUserQuery;
 using HotChocolate;
 using HotChocolate.Authorization;
 using HotChocolate.Types;
