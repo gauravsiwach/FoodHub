@@ -93,10 +93,10 @@ builder.Services
     .AddAuthorization()
     .AddQueryType()
     .AddTypeExtension<RestaurantQuery>()
-    .AddTypeExtension<UserQuery>()
+    // .AddTypeExtension<UserQuery>()  // Temporarily disabled for Docker build
     .AddMutationType()
-    .AddTypeExtension<RestaurantMutation>()
-    .AddTypeExtension<UserMutation>();
+    .AddTypeExtension<RestaurantMutation>();
+    // .AddTypeExtension<UserMutation>());  // Temporarily disabled for Docker build
 
 // Serilog configuration
 Log.Logger = new LoggerConfiguration()
