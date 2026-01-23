@@ -48,23 +48,31 @@ jobs:
         docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
         docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
     
-    # # Get AKS credentials
-    # - name: Get AKS credentials
-    #   run: |
-    #     az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
+    # Get AKS credentials
+    - name: Get AKS credentials
+      run: |
+        az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
     
-    # # Deploy new image to AKS using kubectl set image
-    # - name: Deploy to AKS
-    #   run: |
-    #     kubectl set image deployment/foodhub-api foodhub-api=${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+    # Apply Kubernetes manifests
+    - name: Deploy to AKS
+      run: |
+        # Replace ACR_NAME placeholder in deployment.yaml
+        sed -i "s/__ACR_NAME__/${{ env.ACR_NAME }}/g" k8s/deployment.yaml
+        
+        # Apply manifests
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
+        
+        # Update image to trigger rollout
+        kubectl set image deployment/foodhub-api foodhub-api=${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
     
-    # # Verify deployment rollout
-    # - name: Verify deployment
-    #   run: |
-    #     kubectl rollout status deployment/foodhub-api --timeout=300s
+    # Verify deployment rollout
+    - name: Verify deployment
+      run: |
+        kubectl rollout status deployment/foodhub-api --timeout=300s
     
-    # # Get deployment status
-    # - name: Get deployment status
-    #   run: |
-    #     kubectl get pods -l app=foodhub-api
-    #     kubectl get services
+    # Get deployment status
+    - name: Get deployment status
+      run: |
+        kubectl get pods -l app=foodhub-api
+        kubectl get services
