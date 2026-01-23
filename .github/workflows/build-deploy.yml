@@ -23,6 +23,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
+    # Set up Docker Buildx for cross-platform builds
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
     # Azure login using OIDC (no secrets)
     - name: Azure Login
       uses: azure/login@v2
@@ -36,10 +40,10 @@ jobs:
       run: |
         az acr login --name ${{ env.ACR_NAME }}
     
-    # Build Docker image with multiple tags
+    # Build Docker image with multiple tags for linux/amd64
     - name: Build Docker image
       run: |
-        docker build --platform linux/amd64 -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+        docker buildx build --platform linux/amd64 --load -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} .
         docker tag ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
     
     # Push image to ACR with both tags
