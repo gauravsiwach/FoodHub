@@ -1,0 +1,84 @@
+﻿---
+
+## 🔹 Kubernetes Essential Commands (with 1-line use)
+
+```bash
+kubectl apply -f deployment.yaml
+```
+
+→ Creates or updates the Deployment (runs pods)
+
+```bash
+kubectl apply -f service.yaml
+```
+
+→ Creates or updates the Service (exposes pods)
+
+```bash
+kubectl apply -f .
+```
+
+→ Applies all Kubernetes YAMLs in the folder
+
+```bash
+kubectl get deployments
+```
+
+→ Shows all deployments and replica status
+
+```bash
+kubectl get pods
+```
+
+→ Lists running pods and their health
+
+```bash
+kubectl get svc
+```
+
+→ Lists services and exposed ports
+
+```bash
+kubectl logs <pod-name>
+```
+
+→ Shows application logs from a pod
+
+```bash
+kubectl describe pod <pod-name>
+```
+
+→ Shows pod events, env vars, and errors
+
+```bash
+kubectl scale deployment foodhub-api --replicas=3
+```
+
+→ Scales the app to 3 running pods
+
+```bash
+kubectl scale deployment foodhub-api --replicas=0
+```
+
+→ Stops all pods without deleting deployment
+
+```bash
+kubectl delete deployment foodhub-api
+```
+
+→ Deletes deployment and all its pods
+
+```bash
+kubectl delete service foodhub-api
+```
+
+→ Deletes service and removes external access
+
+```bash
+kubectl delete -f .
+```
+
+→ Deletes all Kubernetes resources from YAMLs
+
+---
+

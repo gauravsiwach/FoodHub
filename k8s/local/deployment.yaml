@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+﻿apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: foodhub-api
@@ -17,16 +17,32 @@ spec:
       containers:
       - name: foodhub-api
         image: foodhub-api:latest
-        imagePullPolicy: Never  # Use local Docker image
+        imagePullPolicy: Never   # local Docker Desktop image
         ports:
         - containerPort: 8080
           name: http
-          protocol: TCP
+
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
+
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
+
+
+        # 🔐 Local Key Vault auth (same as docker run)
+        - name: AZURE_CLIENT_ID
+          value: "AZURE_CLIENT_ID"
+
+        - name: AZURE_CLIENT_SECRET
+          value: "AZURE_CLIENT_SECRET"
+
+        - name: AZURE_TENANT_ID
+          value: "AZURE_TENANT_ID"
+
+        - name: KeyVaultUrl
+          value: "KeyVaultUrl"
+
         resources:
           requests:
             memory: "256Mi"
@@ -34,21 +50,17 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+
         livenessProbe:
           httpGet:
             path: /graphql
             port: 8080
-            scheme: HTTP
           initialDelaySeconds: 30
           periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
+
         readinessProbe:
           httpGet:
             path: /graphql
             port: 8080
-            scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
